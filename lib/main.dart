@@ -10,9 +10,7 @@ void main() {
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {
-            // Add your onPressed code here!
-          },
+          onPressed: () {},
           tooltip: 'Добавить посетителя',
           label: const Text(
             'Добавить',
