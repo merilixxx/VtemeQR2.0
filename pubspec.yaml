@@ -67,6 +67,7 @@ flutter:
      - assets/images/menu.png
      - assets/images/settings_icon.png
      - assets/images/arrows.png
+     - assets/images/calendar.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
