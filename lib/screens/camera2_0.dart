@@ -30,26 +30,28 @@ class _QRViewExampleState extends State<QRViewExample> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            flex: 5,
-            child: QRView(
-              key: qrKey,
-              onQRViewCreated: _onQRViewCreated,
+    return MaterialApp(
+      home: Scaffold(
+        body: Column(
+          children: <Widget>[
+            Expanded(
+              flex: 5,
+              child: QRView(
+                key: qrKey,
+                onQRViewCreated: _onQRViewCreated,
+              ),
             ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Center(
-              child: (result != null)
-                  ? Text(
-                      'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}')
-                  : const Text('Scan a code'),
-            ),
-          )
-        ],
+            Expanded(
+              flex: 1,
+              child: Center(
+                child: (result != null)
+                    ? Text(
+                        'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}')
+                    : const Text('Scan a code'),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
