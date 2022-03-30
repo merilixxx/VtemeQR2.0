@@ -204,6 +204,7 @@ class PopUpInformation extends StatelessWidget {
         TextButton(
           onPressed: () {
             Navigator.pop(context);
+            resume;
           },
           child: const Text("Закрыть"),
         ),
