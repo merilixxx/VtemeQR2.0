@@ -6,6 +6,7 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:vtemeqr/bloc/qr_screen_bloc.dart';
 import 'package:vtemeqr/model/qr_screen_bloc_model.dart';
 
+import 'list_screen.dart';
 import 'settings_screen.dart';
 
 final bloc = GetIt.instance.get<QrScreenBloc>();
@@ -23,14 +24,6 @@ class _QRViewScreenState extends State<QRViewScreen> {
   QRViewController? controller;
   bool _showButton = false;
 
-  final snackBar = SnackBar(
-    content: const Text('Yay! A SnackBar!'),
-    action: SnackBarAction(
-      label: 'Undo',
-      onPressed: () {},
-    ),
-  );
-
   @override
   void reassemble() {
     super.reassemble();
@@ -44,14 +37,22 @@ class _QRViewScreenState extends State<QRViewScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Column(
           children: <Widget>[
             Expanded(
               flex: 5,
-              child: QRView(
-                key: qrKey,
-                onQRViewCreated: _onQRViewCreated,
+              child: Stack(
+                alignment: AlignmentDirectional.center,
+                children: [
+                  QRView(
+                    key: qrKey,
+                    onQRViewCreated: _onQRViewCreated,
+                  ),
+                  Image.asset("assets/images/qr_code.png",
+                      width: 150, height: 150),
+                ],
               ),
             ),
           ],
@@ -131,42 +132,6 @@ class _QRViewScreenState extends State<QRViewScreen> {
   void dispose() {
     controller?.dispose();
     super.dispose();
-  }
-}
-
-class ListScreen extends StatelessWidget {
-  const ListScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 244, 220, 63),
-        elevation: 0,
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: Image.asset("assets/images/arrows.png",
-                  width: 32, height: 32),
-              tooltip: 'Назад',
-            );
-          },
-        ),
-        actions: <Widget>[
-          Builder(
-            builder: (context) {
-              return IconButton(
-                icon: Image.asset("assets/images/calendar.png",
-                    width: 32, height: 32),
-                tooltip: 'Выбор даты',
-                onPressed: () {},
-              );
-            },
-          ),
-        ],
-      ),
-    );
   }
 }
 
