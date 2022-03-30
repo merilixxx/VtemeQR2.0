@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
+import 'settings_screen.dart';
+
 class QRViewScreen extends StatefulWidget {
   const QRViewScreen({Key? key}) : super(key: key);
 
@@ -13,9 +15,16 @@ class _QRViewScreenState extends State<QRViewScreen> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Barcode? result;
   QRViewController? controller;
+  bool _showButton = false;
 
-  // In order to get hot reload to work we need to pause the camera if the platform
-  // is android, or resume the camera if the platform is iOS.
+  final snackBar = SnackBar(
+    content: const Text('Yay! A SnackBar!'),
+    action: SnackBarAction(
+      label: 'Undo',
+      onPressed: () {},
+    ),
+  );
+
   @override
   void reassemble() {
     super.reassemble();
@@ -39,14 +48,6 @@ class _QRViewScreenState extends State<QRViewScreen> {
                 onQRViewCreated: _onQRViewCreated,
               ),
             ),
-            Expanded(
-              flex: 1,
-              child: Center(
-                child: (result != null)
-                    ? Text('${result!.code}')
-                    : const Text('Scan a code'),
-              ),
-            )
           ],
         ),
         appBar: AppBar(
@@ -54,7 +55,7 @@ class _QRViewScreenState extends State<QRViewScreen> {
           leading: Builder(
             builder: (BuildContext context) {
               return IconButton(
-                onPressed: () => Navigator.push(
+                onPressed: () => Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
                     builder: (context) => const ListScreen(),
@@ -67,21 +68,30 @@ class _QRViewScreenState extends State<QRViewScreen> {
             },
           ),
           actions: <Widget>[
-            Builder(builder: (context) {
-              return IconButton(
-                icon: Image.asset("assets/images/settings_icon.png",
-                    width: 32, height: 32),
-                tooltip: 'Настройки',
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SettingsScreen(),
+            Builder(
+              builder: (context) {
+                return IconButton(
+                  icon: Image.asset("assets/images/settings_icon.png",
+                      width: 32, height: 32),
+                  tooltip: 'Настройки',
+                  onPressed: () => Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SettingsScreen(),
+                    ),
                   ),
-                ),
-              );
-            }),
+                );
+              },
+            ),
           ],
         ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: _showButton
+            ? RaisedButton(
+                info: result!.code.toString(),
+                resume: _resumeCamera,
+              )
+            : null,
       ),
     );
   }
@@ -93,10 +103,19 @@ class _QRViewScreenState extends State<QRViewScreen> {
         setState(
           () {
             result = scanData;
+            _showButton = !_showButton;
+            controller.pauseCamera();
           },
         );
       },
     );
+  }
+
+  void _resumeCamera() {
+    setState(() {
+      controller?.resumeCamera();
+      _showButton = !_showButton;
+    });
   }
 
   @override
@@ -142,31 +161,50 @@ class ListScreen extends StatelessWidget {
   }
 }
 
-class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+class RaisedButton extends StatelessWidget {
+  const RaisedButton({Key? key, required this.info, required this.resume})
+      : super(key: key);
+  final info;
+  final VoidCallback resume;
 
-  @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
-}
-
-class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 244, 220, 63),
-        elevation: 0,
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: Image.asset("assets/images/arrows.png",
-                  width: 32, height: 32),
-              tooltip: 'Назад',
-            );
-          },
+    return FloatingActionButton.extended(
+      backgroundColor: const Color.fromARGB(255, 244, 220, 63),
+      onPressed: () => showDialog(
+        context: context,
+        builder: (context) => PopUpInformation(
+          info: info,
+          resume: resume,
         ),
       ),
+      label: const Text("Сканировать код"),
+    );
+  }
+}
+
+class PopUpInformation extends StatelessWidget {
+  const PopUpInformation({Key? key, required this.info, required this.resume})
+      : super(key: key);
+  final info;
+  final VoidCallback resume;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      content: Text(info),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {},
+          child: const Text("Сохранить"),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text("Закрыть"),
+        ),
+      ],
     );
   }
 }

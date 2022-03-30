@@ -36,6 +36,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_bloc: ^8.0.1
   qr_code_scanner: ^0.7.0
+  sql_conn: ^0.0.3
+  get_it: ^7.2.0
 
 dev_dependencies:
   flutter_test:
