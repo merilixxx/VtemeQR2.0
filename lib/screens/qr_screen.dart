@@ -52,7 +52,12 @@ class _QrScreenstate extends State<QrScreen> {
               icon: Image.asset("assets/images/settings_icon.png",
                   width: 32, height: 32),
               tooltip: 'Настройки',
-              onPressed: () {},
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SettingsScreen(),
+                ),
+              ),
             ),
           ],
         ),
@@ -63,6 +68,30 @@ class _QrScreenstate extends State<QrScreen> {
 
 class ListScreen extends StatelessWidget {
   const ListScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: Image.asset("assets/images/arrows.png",
+                  width: 32, height: 32),
+              tooltip: 'Назад',
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
