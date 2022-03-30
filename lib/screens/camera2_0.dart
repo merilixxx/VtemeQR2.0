@@ -1,17 +1,15 @@
 import 'dart:io';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
-class QRViewExample extends StatefulWidget {
-  const QRViewExample({Key? key}) : super(key: key);
+class QRViewScreen extends StatefulWidget {
+  const QRViewScreen({Key? key}) : super(key: key);
 
   @override
-  State<QRViewExample> createState() => _QRViewExampleState();
+  State<QRViewScreen> createState() => _QRViewScreenState();
 }
 
-class _QRViewExampleState extends State<QRViewExample> {
+class _QRViewScreenState extends State<QRViewScreen> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Barcode? result;
   QRViewController? controller;
@@ -52,7 +50,7 @@ class _QRViewExampleState extends State<QRViewExample> {
           ],
         ),
         appBar: AppBar(
-          backgroundColor: Color.fromARGB(255, 244, 220, 63),
+          backgroundColor: const Color.fromARGB(255, 244, 220, 63),
           leading: Builder(
             builder: (BuildContext context) {
               return IconButton(
@@ -69,16 +67,20 @@ class _QRViewExampleState extends State<QRViewExample> {
             },
           ),
           actions: <Widget>[
-            IconButton(
-              icon: Image.asset("assets/images/settings_icon.png",
-                  width: 32, height: 32),
-              tooltip: 'Настройки',
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SettingsScreen(),
-                ),
-              ),
+            Builder(
+              builder: (context) {
+                return IconButton(
+                  icon: Image.asset("assets/images/settings_icon.png",
+                      width: 32, height: 32),
+                  tooltip: 'Настройки',
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SettingsScreen(),
+                    ),
+                  ),
+                );
+              }
             ),
           ],
         ),
@@ -113,7 +115,7 @@ class ListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 244, 220, 63),
+        backgroundColor: const Color.fromARGB(255, 244, 220, 63),
         elevation: 0,
         leading: Builder(
           builder: (BuildContext context) {
@@ -130,14 +132,19 @@ class ListScreen extends StatelessWidget {
   }
 }
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
 
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 244, 220, 63),
+        backgroundColor: const Color.fromARGB(255, 244, 220, 63),
         elevation: 0,
         leading: Builder(
           builder: (BuildContext context) {

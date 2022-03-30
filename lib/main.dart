@@ -3,6 +3,6 @@ import 'package:vtemeqr/screens/camera2_0.dart';
 
 void main() {
   runApp(
-    const QRViewExample(),
+    const QRViewScreen(),
   );
 }
