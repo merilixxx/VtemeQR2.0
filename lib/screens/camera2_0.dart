@@ -67,21 +67,19 @@ class _QRViewScreenState extends State<QRViewScreen> {
             },
           ),
           actions: <Widget>[
-            Builder(
-              builder: (context) {
-                return IconButton(
-                  icon: Image.asset("assets/images/settings_icon.png",
-                      width: 32, height: 32),
-                  tooltip: 'Настройки',
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SettingsScreen(),
-                    ),
+            Builder(builder: (context) {
+              return IconButton(
+                icon: Image.asset("assets/images/settings_icon.png",
+                    width: 32, height: 32),
+                tooltip: 'Настройки',
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SettingsScreen(),
                   ),
-                );
-              }
-            ),
+                ),
+              );
+            }),
           ],
         ),
       ),
@@ -127,6 +125,18 @@ class ListScreen extends StatelessWidget {
             );
           },
         ),
+        actions: <Widget>[
+          Builder(
+            builder: (context) {
+              return IconButton(
+                icon: Image.asset("assets/images/calendar.png",
+                    width: 32, height: 32),
+                tooltip: 'Выбор даты',
+                onPressed: () {},
+              );
+            },
+          ),
+        ],
       ),
     );
   }
