@@ -55,7 +55,7 @@ class _QRViewScreenState extends State<QRViewScreen> {
           leading: Builder(
             builder: (BuildContext context) {
               return IconButton(
-                onPressed: () => Navigator.pushReplacement(
+                onPressed: () => Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => const ListScreen(),
@@ -74,7 +74,7 @@ class _QRViewScreenState extends State<QRViewScreen> {
                   icon: Image.asset("assets/images/settings_icon.png",
                       width: 32, height: 32),
                   tooltip: 'Настройки',
-                  onPressed: () => Navigator.pushReplacement(
+                  onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const SettingsScreen(),
@@ -112,10 +112,13 @@ class _QRViewScreenState extends State<QRViewScreen> {
   }
 
   void _resumeCamera() {
-    setState(() {
-      controller?.resumeCamera();
-      _showButton = !_showButton;
-    });
+    controller!.resumeCamera();
+    _showButton = !_showButton;
+    result = Barcode(
+      null,
+      BarcodeFormat.qrcode,
+      null,
+    );
   }
 
   @override
