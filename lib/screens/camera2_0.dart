@@ -1,8 +1,14 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:vtemeqr/bloc/qr_screen_bloc.dart';
+import 'package:vtemeqr/model/qr_screen_bloc_model.dart';
 
 import 'settings_screen.dart';
+
+final bloc = GetIt.instance.get<QrScreenBloc>();
 
 class QRViewScreen extends StatefulWidget {
   const QRViewScreen({Key? key}) : super(key: key);
@@ -194,21 +200,26 @@ class PopUpInformation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      content: Text(info),
-      actions: <Widget>[
-        TextButton(
-          onPressed: () {},
-          child: const Text("Сохранить"),
-        ),
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-            resume;
-          },
-          child: const Text("Закрыть"),
-        ),
-      ],
+    return BlocBuilder<QrScreenBloc, QrScreenBlocState>(
+      bloc: bloc,
+      builder: (context, state) {
+        return AlertDialog(
+          content: Text(info),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => bloc.connectSQL(),
+              child: const Text("Сохранить"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                resume;
+              },
+              child: const Text("Закрыть"),
+            ),
+          ],
+        );
+      },
     );
   }
 }
