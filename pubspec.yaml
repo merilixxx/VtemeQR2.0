@@ -71,6 +71,8 @@ flutter:
      - assets/images/settings_icon.png
      - assets/images/arrows.png
      - assets/images/calendar.png
+     - assets/images/vip.png
+     - assets/images/money.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
