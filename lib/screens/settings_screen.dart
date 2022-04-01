@@ -38,7 +38,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   builder: (BuildContext context) {
                     Alignment.topLeft;
                     return TextButton(
-                      child: const Text("Настройка списка VIP"),
+                      child: const Text("Настройка оплаты"),
                       onPressed: () {},
                     );
                   },
