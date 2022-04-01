@@ -12,7 +12,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 244, 220, 63),
+        backgroundColor: const Color.fromRGBO(255, 179, 91, 1),
         elevation: 0,
         leading: Builder(
           builder: (BuildContext context) {

@@ -51,26 +51,26 @@ class _QRViewScreenState extends State<QRViewScreen> {
                     onQRViewCreated: _onQRViewCreated,
                   ),
                   Image.asset("assets/images/qr_code.png",
-                      width: 150, height: 150),
+                      width: 175, height: 175),
                 ],
               ),
             ),
           ],
         ),
         appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 244, 220, 63),
+          backgroundColor: const Color.fromRGBO(255, 179, 91, 1),
           leading: Builder(
             builder: (BuildContext context) {
               return IconButton(
+                icon: Image.asset("assets/images/menu.png",
+                    width: 32, height: 32),
+                tooltip: 'Список',
                 onPressed: () => Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => const ListScreen(),
                   ),
                 ),
-                icon: Image.asset("assets/images/menu.png",
-                    width: 32, height: 32),
-                tooltip: 'Список',
               );
             },
           ),
@@ -127,12 +127,6 @@ class _QRViewScreenState extends State<QRViewScreen> {
       null,
     );
   }
-
-  @override
-  void dispose() {
-    controller?.dispose();
-    super.dispose();
-  }
 }
 
 class RaisedButton extends StatelessWidget {
@@ -144,7 +138,7 @@ class RaisedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
-      backgroundColor: const Color.fromARGB(255, 244, 220, 63),
+      backgroundColor: const Color.fromRGBO(255, 179, 91, 1),
       onPressed: () => showDialog(
         context: context,
         builder: (context) => PopUpInformation(

@@ -13,49 +13,46 @@ class _ListScreenState extends State<ListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 244, 220, 63),
-          elevation: 0,
-          leading: Builder(
-            builder: (BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color.fromRGBO(255, 179, 91, 1),
+        elevation: 0,
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: Image.asset("assets/images/arrows.png",
+                  width: 32, height: 32),
+              tooltip: 'Назад',
+            );
+          },
+        ),
+        actions: <Widget>[
+          Builder(
+            builder: (context) {
               return IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: Image.asset("assets/images/arrows.png",
+                icon: Image.asset("assets/images/calendar.png",
                     width: 32, height: 32),
-                tooltip: 'Назад',
+                tooltip: 'Выбор даты',
+                onPressed: () => _selectDate(context),
               );
             },
           ),
-          actions: <Widget>[
-            Builder(
-              builder: (context) {
-                return IconButton(
-                  icon: Image.asset("assets/images/calendar.png",
-                      width: 32, height: 32),
-                  tooltip: 'Выбор даты',
-                  onPressed: () => _selectDate(context),
-                );
-              },
-            ),
-          ],
-          centerTitle: true,
-          titleTextStyle: const TextStyle(
-            color: Colors.black,
-            fontSize: 22,
-          ),
-          title: dateController.text.isNotEmpty
-              ? Text(
-                  dateController.text,
-                )
-              : Text(
-                  DateFormat('d.M.y').format(
-                    DateTime.now(),
-                  ),
-                ),
+        ],
+        centerTitle: true,
+        titleTextStyle: const TextStyle(
+          color: Colors.black,
+          fontSize: 22,
         ),
+        title: dateController.text.isNotEmpty
+            ? Text(
+                dateController.text,
+              )
+            : Text(
+                DateFormat('d.M.y').format(
+                  DateTime.now(),
+                ),
+              ),
       ),
     );
   }
