@@ -11,6 +11,49 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            flex: 1,
+            child: Stack(
+              children: [
+                Builder(
+                  builder: (BuildContext context) {
+                    Alignment.topLeft;
+                    return TextButton(
+                      child: const Text("Настройка списка VIP"),
+                      onPressed: () {},
+                    );
+                  },
+                )
+              ],
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Stack(
+              alignment: AlignmentDirectional.topStart,
+              children: [
+                Builder(
+                  builder: (BuildContext context) {
+                    Alignment.topLeft;
+                    return TextButton(
+                      child: const Text("Настройка списка VIP"),
+                      onPressed: () {},
+                    );
+                  },
+                )
+              ],
+            ),
+          ),
+          Expanded(
+            flex: 10,
+            child: Stack(
+              alignment: AlignmentDirectional.topStart,
+            ),
+          )
+        ],
+      ),
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(255, 179, 91, 1),
         elevation: 0,
