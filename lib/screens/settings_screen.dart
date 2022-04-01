@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:vtemeqr/bloc/list_screen_bloc.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -8,50 +10,36 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  final bloc = GetIt.instance.get<ListScreenBloc>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Expanded(
-            flex: 1,
-            child: Stack(
-              children: [
-                Builder(
-                  builder: (BuildContext context) {
-                    Alignment.topLeft;
-                    return TextButton(
-                      child: const Text("Настройка списка VIP"),
-                      onPressed: () {},
-                    );
-                  },
-                )
-              ],
+          ListTile(
+            title: const Text(
+              'Настройка списка VIP',
             ),
+            leading: Image.asset(
+              'assets/images/vip.png',
+              width: 32,
+              height: 32,
+            ),
+            onTap: () {},
           ),
-          Expanded(
-            flex: 1,
-            child: Stack(
-              alignment: AlignmentDirectional.topStart,
-              children: [
-                Builder(
-                  builder: (BuildContext context) {
-                    Alignment.topLeft;
-                    return TextButton(
-                      child: const Text("Настройка оплаты"),
-                      onPressed: () {},
-                    );
-                  },
-                )
-              ],
+          ListTile(
+            title: const Text(
+              'Настройка оплаты',
             ),
+            leading: Image.asset(
+              'assets/images/money.png',
+              width: 32,
+              height: 32,
+            ),
+            onTap: () => bloc.getData(),
           ),
-          Expanded(
-            flex: 10,
-            child: Stack(
-              alignment: AlignmentDirectional.topStart,
-            ),
-          )
         ],
       ),
       appBar: AppBar(
