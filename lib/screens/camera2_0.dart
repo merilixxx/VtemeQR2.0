@@ -146,7 +146,7 @@ class RaisedButton extends StatelessWidget {
           resume: resume,
         ),
       ),
-      label: const Text("Сканировать код"),
+      label: const Text("Просмотр"),
     );
   }
 }
@@ -167,7 +167,7 @@ class PopUpInformation extends StatelessWidget {
           actions: <Widget>[
             TextButton(
               onPressed: () => bloc.connectSQL(),
-              child: const Text("Сохранить"),
+              child: const Text("Добавить"),
             ),
             TextButton(
               onPressed: () {
