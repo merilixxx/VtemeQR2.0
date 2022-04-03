@@ -23,7 +23,6 @@ class _ListScreenState extends State<ListScreen> {
           databaseURL:
               "https://qrvteme-default-rtdb.europe-west1.firebasedatabase.app")
       .reference();
-  final listOfUsers = <ListTile>[];
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +79,7 @@ class _ListScreenState extends State<ListScreen> {
               final values = Map<String, dynamic>.from(
                 (snapshot.value as Map<dynamic, dynamic>),
               );
+              final listOfUsers = <ListTile>[];
               values.forEach((key, value) {
                 final user = Map<String, dynamic>.from(value);
                 final userTile = ListTile(
