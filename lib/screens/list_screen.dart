@@ -1,4 +1,8 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -15,6 +19,11 @@ class ListScreen extends StatefulWidget {
 class _ListScreenState extends State<ListScreen> {
   final dateController = TextEditingController();
   final bloc = GetIt.instance.get<ListScreenBloc>();
+  final firebase = FirebaseDatabase(
+          databaseURL:
+              "https://qrvteme-default-rtdb.europe-west1.firebasedatabase.app")
+      .reference();
+  final listOfUsers = <ListTile>[];
 
   @override
   Widget build(BuildContext context) {
@@ -65,21 +74,32 @@ class _ListScreenState extends State<ListScreen> {
                     ),
                   ),
           ),
-          body: state.users.name != ''
-              ? ListView.builder(
-                  itemCount: 2,
-                  itemBuilder: (BuildContext context, int index) {
-                    return ListItem(
-                      from: state.users.name[index],
-                      to: state.users.nick[index],
-                      name: state.users.status,
-                      paid: state.users.pay.toString(),
-                    );
-                  },
-                )
-              : const Center(
-                  child: Text('No data found'),
-                ),
+          body: FirebaseAnimatedList(
+            itemBuilder: (BuildContext context, DataSnapshot snapshot,
+                Animation<double> animation, int index) {
+              final values = Map<String, dynamic>.from(
+                (snapshot.value as Map<dynamic, dynamic>),
+              );
+              values.forEach((key, value) {
+                final user = Map<String, dynamic>.from(value);
+                final userTile = ListTile(
+                  title: Text(
+                    user['Nick'],
+                  ),
+                  subtitle: Text(
+                    user['Name'],
+                  ),
+                );
+                listOfUsers.add(userTile);
+              });
+              return ListView(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                children: listOfUsers,
+              );
+            },
+            query: firebase,
+          ),
         );
       },
     );

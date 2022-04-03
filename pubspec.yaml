@@ -41,7 +41,6 @@ dependencies:
   easy_localization: ^3.0.0
   firebase_database: ^9.0.9
   firebase_core: ^1.14.0
-  json_serializable: ^6.1.5
   http: ^0.13.4
 
 dev_dependencies:

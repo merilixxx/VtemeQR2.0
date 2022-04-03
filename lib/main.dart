@@ -18,14 +18,7 @@ Future<void> main() async {
   );
   GetIt.instance.registerSingleton<ListScreenBloc>(
     ListScreenBloc(
-      ListScreenBlocState(
-        users: Users(
-          name: '',
-          nick: '',
-          pay: 0,
-          status: '',
-        ),
-      ),
+      ListScreenBlocState(),
     ),
   );
   runApp(
