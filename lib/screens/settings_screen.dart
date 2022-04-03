@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:vtemeqr/bloc/list_screen_bloc.dart';
+import 'package:vtemeqr/bloc/settings_screen_bloc.dart';
+import 'package:vtemeqr/model/settings_screen_model.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -10,8 +12,6 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  final bloc = GetIt.instance.get<ListScreenBloc>();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +38,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               width: 32,
               height: 32,
             ),
-            onTap: () => bloc.getData(),
+            onTap: () => showDialog(
+              context: context,
+              builder: (BuildContext context) => const PricePopUp(),
+            ),
           ),
         ],
       ),
@@ -55,6 +58,122 @@ class _SettingsScreenState extends State<SettingsScreen> {
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+class PricePopUp extends StatefulWidget {
+  const PricePopUp({Key? key}) : super(key: key);
+
+  @override
+  State<PricePopUp> createState() => _PricePopUpState();
+}
+
+class _PricePopUpState extends State<PricePopUp> {
+  final priceVIP = TextEditingController();
+  final priceFriend = TextEditingController();
+  final priceGuest = TextEditingController();
+  final bloc = GetIt.instance.get<SettingsScreenBloc>();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SettingsScreenBloc, SettingsScreenBlocState>(
+      bloc: bloc,
+      builder: (context, state) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  const Expanded(
+                    child: Text(
+                      'VIP',
+                    ),
+                  ),
+                  Expanded(
+                    child: TextField(
+                      controller: priceVIP,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        labelText: state.priceVIP.toString(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  const Expanded(
+                    child: Text(
+                      'Друг',
+                    ),
+                  ),
+                  Expanded(
+                    child: TextField(
+                      controller: priceFriend,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        labelText: state.priceFriend.toString(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  const Expanded(
+                    child: Text(
+                      'Гость',
+                    ),
+                  ),
+                  Expanded(
+                    child: TextField(
+                      controller: priceGuest,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        labelText: state.priceGuest.toString(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                _saveChanges();
+                Navigator.pop(context);
+              },
+              child: const Text(
+                'Закрыть и сохранить',
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _saveChanges() {
+    bloc.setValue(
+      'VIP',
+      int.parse(
+        priceVIP.text,
+      ),
+    );
+    bloc.setValue(
+      'Friend',
+      int.parse(
+        priceFriend.text,
+      ),
+    );
+    bloc.setValue(
+      'Guest',
+      int.parse(
+        priceGuest.text,
       ),
     );
   }
