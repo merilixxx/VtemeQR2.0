@@ -130,31 +130,61 @@ class _QRViewScreenState extends State<QRViewScreen> {
 }
 
 class RaisedButton extends StatelessWidget {
-  const RaisedButton({Key? key, required this.info, required this.resume})
+  RaisedButton({Key? key, required this.info, required this.resume})
       : super(key: key);
   final info;
   final VoidCallback resume;
+  String? nick;
+  String? name;
+  String? status;
 
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
       backgroundColor: const Color.fromRGBO(255, 179, 91, 1),
-      onPressed: () => showDialog(
-        context: context,
-        builder: (context) => PopUpInformation(
-          info: info,
-          resume: resume,
-        ),
-      ),
+      onPressed: () {
+        getString(info);
+        showDialog(
+          context: context,
+          builder: (context) => PopUpInformation(
+            name: name,
+            nick: nick,
+            status: status,
+            resume: resume,
+          ),
+        );
+      },
       label: const Text("Просмотр"),
     );
+  }
+
+  String? getString(String info) {
+    final regExpNick = RegExp(r'([а-я--]+)?\.?"([А-Яа-я]+)"', unicode: true);
+
+    final regExpName = RegExp(r'/?;([А-Яа-я]+)', unicode: true);
+
+    final regExpStatus =
+        RegExp(r'(VIP)|(Гость Клуба)|(Друг Клуба)|(Новичок)', unicode: true);
+
+    nick = regExpNick.stringMatch(info);
+    name = regExpName.stringMatch(info);
+    name = name!.split(';').last;
+    status = regExpStatus.stringMatch(info);
+    return nick;
   }
 }
 
 class PopUpInformation extends StatelessWidget {
-  const PopUpInformation({Key? key, required this.info, required this.resume})
+  const PopUpInformation(
+      {Key? key,
+      required this.name,
+      required this.nick,
+      required this.status,
+      required this.resume})
       : super(key: key);
-  final info;
+  final name;
+  final nick;
+  final status;
   final VoidCallback resume;
 
   @override
@@ -163,7 +193,14 @@ class PopUpInformation extends StatelessWidget {
       bloc: bloc,
       builder: (context, state) {
         return AlertDialog(
-          content: Text(info),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(name),
+              Text(nick),
+              Text(status),
+            ],
+          ),
           actions: <Widget>[
             TextButton(
               onPressed: () => bloc.connectSQL(),
