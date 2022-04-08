@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get_it/get_it.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:vtemeqr/bloc/qr_screen_bloc.dart';
@@ -119,13 +120,7 @@ class _QRViewScreenState extends State<QRViewScreen> {
   }
 
   void _resumeCamera() {
-    controller!.resumeCamera();
-    _showButton = !_showButton;
-    result = Barcode(
-      null,
-      BarcodeFormat.qrcode,
-      null,
-    );
+    Phoenix.rebirth(context);
   }
 }
 

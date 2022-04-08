@@ -31,14 +31,14 @@ class QrScreenBloc extends Cubit<QrScreenBlocState> {
       default:
         pay = prefs.getInt('Guest');
     }
-    await firebase.set({
-      "01_01_01": {
-        "$name": {
-          "Name": "$name",
-          "Nick": "$nick",
-          "Pay": "$pay",
-          "Status": "$status"
-        }
+    await firebase
+        .child("${DateFormat('d_M_y').format(DateTime.now()).toString()}")
+        .set({
+      "$name": {
+        "Name": "$name",
+        "Nick": "$nick",
+        "Pay": "$pay",
+        "Status": "$status"
       }
     });
   }
