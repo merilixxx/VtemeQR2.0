@@ -33,7 +33,7 @@ class QrScreenBloc extends Cubit<QrScreenBlocState> {
     }
     await firebase
         .child("${DateFormat('d_M_y').format(DateTime.now()).toString()}")
-        .set({
+        .update({
       "$name": {
         "Name": "$name",
         "Nick": "$nick",

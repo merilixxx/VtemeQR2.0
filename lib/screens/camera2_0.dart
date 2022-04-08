@@ -97,7 +97,6 @@ class _QRViewScreenState extends State<QRViewScreen> {
         floatingActionButton: _showButton
             ? RaisedButton(
                 info: result!.code.toString(),
-                resume: _resumeCamera,
               )
             : null,
       ),
@@ -118,17 +117,15 @@ class _QRViewScreenState extends State<QRViewScreen> {
       },
     );
   }
-
-  void _resumeCamera() {
-    Phoenix.rebirth(context);
-  }
 }
 
 class RaisedButton extends StatelessWidget {
-  RaisedButton({Key? key, required this.info, required this.resume})
-      : super(key: key);
+  RaisedButton({
+    Key? key,
+    required this.info,
+  }) : super(key: key);
   final info;
-  final VoidCallback resume;
+
   String? nick;
   String? name;
   String? status;
@@ -145,7 +142,6 @@ class RaisedButton extends StatelessWidget {
             name: name,
             nick: nick,
             status: status,
-            resume: resume,
           ),
         );
       },
@@ -169,17 +165,15 @@ class RaisedButton extends StatelessWidget {
 }
 
 class PopUpInformation extends StatelessWidget {
-  const PopUpInformation(
-      {Key? key,
-      required this.name,
-      required this.nick,
-      required this.status,
-      required this.resume})
-      : super(key: key);
+  const PopUpInformation({
+    Key? key,
+    required this.name,
+    required this.nick,
+    required this.status,
+  }) : super(key: key);
   final name;
   final nick;
   final status;
-  final VoidCallback resume;
 
   @override
   Widget build(BuildContext context) {
@@ -203,8 +197,7 @@ class PopUpInformation extends StatelessWidget {
             TextButton(
               onPressed: () {
                 bloc.addQR(name, nick, status);
-                Navigator.pop(context);
-                resume;
+                Phoenix.rebirth(context);
               },
               child: const Text("Закрыть"),
             ),
