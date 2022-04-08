@@ -158,7 +158,7 @@ class RaisedButton extends StatelessWidget {
     );
   }
 
-  String? getString(String info) {
+  void getString(String info) {
     final regExpNick = RegExp(r'([а-я--]+)?\.?"([А-Яа-я]+)"', unicode: true);
 
     final regExpName = RegExp(r'/?;([А-Яа-я]+)', unicode: true);
@@ -170,7 +170,6 @@ class RaisedButton extends StatelessWidget {
     name = regExpName.stringMatch(info);
     name = name!.split(';').last;
     status = regExpStatus.stringMatch(info);
-    return nick;
   }
 }
 
@@ -203,11 +202,12 @@ class PopUpInformation extends StatelessWidget {
           ),
           actions: <Widget>[
             TextButton(
-              onPressed: () => bloc.connectSQL(),
+              onPressed: () {},
               child: const Text("Добавить"),
             ),
             TextButton(
               onPressed: () {
+                bloc.addQR(name, nick, status);
                 Navigator.pop(context);
                 resume;
               },
