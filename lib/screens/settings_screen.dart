@@ -107,7 +107,7 @@ class _PricePopUpState extends State<PricePopUp> {
                 children: <Widget>[
                   const Expanded(
                     child: Text(
-                      'Друг',
+                      'Почетный гость',
                     ),
                   ),
                   Expanded(
@@ -125,7 +125,7 @@ class _PricePopUpState extends State<PricePopUp> {
                 children: <Widget>[
                   const Expanded(
                     child: Text(
-                      'Гость',
+                      'Новичек',
                     ),
                   ),
                   Expanded(

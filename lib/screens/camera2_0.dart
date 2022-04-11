@@ -191,12 +191,19 @@ class PopUpInformation extends StatelessWidget {
           ),
           actions: <Widget>[
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                bloc.addQR(name, nick, status);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ListScreen(),
+                  ),
+                );
+              },
               child: const Text("Добавить"),
             ),
             TextButton(
               onPressed: () {
-                bloc.addQR(name, nick, status);
                 Phoenix.rebirth(context);
               },
               child: const Text("Закрыть"),
