@@ -2,13 +2,17 @@
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 import '../bloc/settings_screen_bloc.dart';
+import '../services/fonts.dart';
 
 final bloc = GetIt.instance.get<SettingsScreenBloc>();
+DateTime data = DateTime.now();
+List<Widget> listOfUsers = <Widget>[];
+int payment = 0;
+int numberOfGuests = 0;
 
 class ListScreen extends StatefulWidget {
   const ListScreen({Key? key}) : super(key: key);
@@ -19,10 +23,12 @@ class ListScreen extends StatefulWidget {
 
 class _ListScreenState extends State<ListScreen> {
   final dateController = TextEditingController();
-  final firebase = FirebaseDatabase(
+  Future<DataSnapshot> firebase = FirebaseDatabase(
           databaseURL:
               "https://qrvteme-default-rtdb.europe-west1.firebasedatabase.app")
-      .reference();
+      .reference()
+      .child('Orders/${DateFormat('d_M_y').format(data).toString()}')
+      .get();
 
   @override
   Widget build(BuildContext context) {
@@ -65,36 +71,137 @@ class _ListScreenState extends State<ListScreen> {
               )
             : Text(
                 DateFormat('d.M.y').format(
-                  DateTime.now(),
+                  data,
                 ),
+                style: Font.cuprumStyle20,
               ),
       ),
-      body: FirebaseAnimatedList(
-        itemBuilder: (BuildContext context, DataSnapshot snapshot,
-            Animation<double> animation, int index) {
-          final values = Map<String, dynamic>.from(
-            (snapshot.value as Map<dynamic, dynamic>),
-          );
-          final listOfUsers = <ListTile>[];
-          values.forEach((key, value) {
-            final user = Map<String, dynamic>.from(value);
-            final userTile = ListTile(
-              title: Text(
-                user['Nick'],
-              ),
-              subtitle: Text(
-                user['Name'],
+      body: FutureBuilder(
+        future: firebase,
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done &&
+              snapshot.data.value != null) {
+            final values = Map<String, dynamic>.from(
+              (snapshot.data.value as Map<dynamic, dynamic>),
+            );
+            values.forEach(
+              (key, value) {
+                final user = Map<String, dynamic>.from(value);
+                numberOfGuests++;
+                payment += int.parse(
+                  user["Pay"],
+                );
+                final userTile = ListTile(
+                  title: Text(
+                    'г-н(жа) ${user["Nick"]}',
+                    style: Font.cuprumStyle20,
+                  ),
+                  subtitle: Text(
+                    '${user['Name']}',
+                    style: Font.cuprumStyle16grey,
+                  ),
+                  trailing: Text(
+                    user["Status"],
+                    style: Font.cuprumStyle20,
+                  ),
+                );
+                listOfUsers.add(userTile);
+                listOfUsers.add(const Divider(
+                  height: 5,
+                  color: Colors.grey,
+                ));
+              },
+            );
+            return Scaffold(
+              backgroundColor: const Color.fromRGBO(255, 179, 91, 1),
+              body: Center(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width - 50,
+                        height: MediaQuery.of(context).size.height / 2,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(30),
+                          ),
+                        ),
+                        child: ListView(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          children: listOfUsers,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width - 50,
+                        height: 55,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(30),
+                          ),
+                        ),
+                        child: ListTile(
+                          title: Text(
+                            'Оплачено:',
+                            style: Font.cuprumStyle20,
+                          ),
+                          trailing: Text(
+                            '${payment.toString()} BYN',
+                            style: Font.cuprumStyle20,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width - 50,
+                        height: 55,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(30),
+                          ),
+                        ),
+                        child: ListTile(
+                          title: Text(
+                            'Гостей:',
+                            style: Font.cuprumStyle20,
+                          ),
+                          trailing: Text(
+                            '$numberOfGuests',
+                            style: Font.cuprumStyle20,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
-            listOfUsers.add(userTile);
-          });
-          return ListView(
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
-            children: listOfUsers,
-          );
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.data.values == null) {
+            return Center(
+              child: Text(
+                'Нет данных для отображения',
+                style: Font.cuprumStyle20,
+              ),
+            );
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
         },
-        query: firebase,
       ),
     );
   }
@@ -109,7 +216,16 @@ class _ListScreenState extends State<ListScreen> {
     if (picked != null) {
       setState(
         () {
-          dateController.text = DateFormat('d.M.y').format(picked);
+          data = picked;
+          numberOfGuests = 0;
+          payment = 0;
+          listOfUsers = <Widget>[];
+          firebase = FirebaseDatabase(
+                  databaseURL:
+                      "https://qrvteme-default-rtdb.europe-west1.firebasedatabase.app")
+              .reference()
+              .child('Orders/${DateFormat('d_M_y').format(data).toString()}')
+              .get();
         },
       );
     }
