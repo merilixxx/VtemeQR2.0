@@ -79,13 +79,15 @@ class _ListScreenState extends State<ListScreen> {
           values.forEach((key, value) {
             final user = Map<String, dynamic>.from(value);
             final userTile = ListTile(
-              title: Text(
-                user['Nick'],
-              ),
-              subtitle: Text(
-                user['Name'],
-              ),
-            );
+                title: Text(
+                  user['Nick'],
+                ),
+                subtitle: Text(
+                  user['Name'],
+                ),
+                trailing: Text(
+                  user['Status'],
+                ));
             listOfUsers.add(userTile);
           });
           return ListView(
