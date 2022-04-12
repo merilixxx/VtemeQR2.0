@@ -4,11 +4,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-
-import '../bloc/settings_screen_bloc.dart';
+import 'package:vtemeqr/bloc/qr_screen_bloc.dart';
 import '../services/fonts.dart';
 
-final bloc = GetIt.instance.get<SettingsScreenBloc>();
+final addingBloc = GetIt.I.get<QrScreenBloc>();
 DateTime data = DateTime.now();
 List<Widget> listOfUsers = <Widget>[];
 int payment = 0;
@@ -92,6 +91,18 @@ class _ListScreenState extends State<ListScreen> {
                   user["Pay"],
                 );
                 final userTile = ListTile(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => PopUpEdit(
+                        name: user['Name'],
+                        nick: '${user["Nick"]}',
+                        status: user["Status"],
+                        pay: user["Pay"],
+                        refresh: () => refreshData(data),
+                      ),
+                    );
+                  },
                   title: Text(
                     'г-н(жа) ${user["Nick"]}',
                     style: Font.cuprumStyle20,
@@ -185,20 +196,12 @@ class _ListScreenState extends State<ListScreen> {
                 ),
               ),
             );
-          } else if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapshot.data.values == null) {
+          } else {
             return Center(
               child: Text(
                 'Нет данных для отображения',
                 style: Font.cuprumStyle20,
               ),
-            );
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
             );
           }
         },
@@ -214,75 +217,158 @@ class _ListScreenState extends State<ListScreen> {
       lastDate: DateTime(DateTime.now().year + 1, DateTime.now().month + 5),
     );
     if (picked != null) {
-      setState(
-        () {
-          data = picked;
-          numberOfGuests = 0;
-          payment = 0;
-          listOfUsers = <Widget>[];
-          firebase = FirebaseDatabase(
-                  databaseURL:
-                      "https://qrvteme-default-rtdb.europe-west1.firebasedatabase.app")
-              .reference()
-              .child('Orders/${DateFormat('d_M_y').format(data).toString()}')
-              .get();
-        },
-      );
+      refreshData(picked);
     }
+  }
+
+  void refreshData(DateTime picked) {
+    setState(
+      () {
+        data = picked;
+        numberOfGuests = 0;
+        payment = 0;
+        listOfUsers = <Widget>[];
+        firebase = FirebaseDatabase(
+                databaseURL:
+                    "https://qrvteme-default-rtdb.europe-west1.firebasedatabase.app")
+            .reference()
+            .child('Orders/${DateFormat('d_M_y').format(data).toString()}')
+            .get();
+      },
+    );
   }
 }
 
-class ListItem extends StatelessWidget {
-  final String from;
-  final String to;
+class PopUpEdit extends StatefulWidget {
+  const PopUpEdit(
+      {Key? key,
+      required this.name,
+      required this.nick,
+      required this.status,
+      required this.pay,
+      required this.refresh})
+      : super(key: key);
   final String name;
-  final String paid;
-  const ListItem({
-    Key? key,
-    required this.from,
-    required this.to,
-    required this.name,
-    required this.paid,
-  }) : super(key: key);
+  final String nick;
+  final String status;
+  final String pay;
+  final VoidCallback refresh;
+
+  @override
+  State<PopUpEdit> createState() => _PopUpEditState();
+}
+
+class _PopUpEditState extends State<PopUpEdit> {
+  final payController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      trailing: TextButton(
-        onPressed: () {},
-        child: const Icon(
-          Icons.star_border_outlined,
+    return AlertDialog(
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Center(
+            child: Text(
+              'Изменять можно только оплату',
+              style: Font.cuprumStyle20,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: <Widget>[
+                const Expanded(
+                  child: Text('Имя: '),
+                ),
+                Expanded(
+                  child: Text(
+                    widget.name,
+                    style: Font.cuprumStyle20,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: <Widget>[
+                const Expanded(
+                  child: Text('Ник: '),
+                ),
+                Expanded(
+                  child: Text(
+                    widget.nick,
+                    style: Font.cuprumStyle20,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: <Widget>[
+                const Expanded(
+                  child: Text('Статус: '),
+                ),
+                Expanded(
+                  child: Text(
+                    widget.status,
+                    style: Font.cuprumStyle20,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: <Widget>[
+                const Expanded(
+                  child: Text('Плата: '),
+                ),
+                Expanded(
+                  child: TextField(
+                    keyboardType: TextInputType.number,
+                    controller: payController,
+                    decoration: InputDecoration(
+                      hintText: widget.pay,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            if (payController.text.isNotEmpty) {
+              addingBloc.updateQR(
+                widget.name,
+                widget.nick,
+                widget.status,
+                int.parse(payController.text),
+              );
+            }
+            widget.refresh;
+            Navigator.of(context).pop();
+          },
+          child: Text(
+            'Обновить',
+            style: Font.cuprumStyle16,
+          ),
         ),
-      ),
-      leading: const Icon(
-        Icons.car_rental,
-        size: 30,
-      ),
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            '$from - $to   ',
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(
+            'Закрыть и не сохранять',
+            style: Font.cuprumStyle16,
           ),
-        ],
-      ),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            name.toString(),
-          ),
-          Text(
-            paid != '0' ? '$paid BYN' : 'Безплатно',
-          ),
-        ],
-      ),
-      contentPadding: const EdgeInsets.fromLTRB(
-        30,
-        10,
-        0,
-        15,
-      ),
+        ),
+      ],
     );
   }
 }

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,15 +11,12 @@ class QrScreenBloc extends Cubit<QrScreenBlocState> {
   QrScreenBloc(QrScreenBlocState initialState) : super(initialState);
 
   Future addQR(name, nick, status) async {
-    print(DateFormat('d_M_y').format(DateTime.now()));
     final prefs = await SharedPreferences.getInstance();
-    // ignore: deprecated_member_use
     final firebase = FirebaseDatabase(
             databaseURL:
                 "https://qrvteme-default-rtdb.europe-west1.firebasedatabase.app")
-        // ignore: deprecated_member_use
         .reference();
-    final pay;
+    final int? pay;
     switch (status) {
       case 'VIP':
         pay = prefs.getInt('VIP');
@@ -32,14 +31,37 @@ class QrScreenBloc extends Cubit<QrScreenBlocState> {
         pay = prefs.getInt('Guest');
     }
     await firebase
-        .child("${DateFormat('d_M_y').format(DateTime.now()).toString()}")
-        .update({
-      "$name": {
-        "Name": "$name",
-        "Nick": "$nick",
-        "Pay": "$pay",
-        "Status": "$status"
-      }
-    });
+        .child(
+            "Orders/${DateFormat('d_M_y').format(DateTime.now()).toString()}")
+        .update(
+      {
+        "$name": {
+          "Name": "$name",
+          "Nick": "$nick",
+          "Pay": "$pay",
+          "Status": "$status"
+        }
+      },
+    );
+  }
+
+  Future updateQR(name, nick, status, pay) async {
+    final firebase = FirebaseDatabase(
+            databaseURL:
+                "https://qrvteme-default-rtdb.europe-west1.firebasedatabase.app")
+        .reference();
+    await firebase
+        .child(
+            "Orders/${DateFormat('d_M_y').format(DateTime.now()).toString()}")
+        .update(
+      {
+        "$name": {
+          "Name": "$name",
+          "Nick": "$nick",
+          "Pay": "$pay",
+          "Status": "$status"
+        }
+      },
+    );
   }
 }

@@ -119,12 +119,13 @@ class _QRViewScreenState extends State<QRViewScreen> {
   }
 }
 
+// ignore: must_be_immutable
 class RaisedButton extends StatelessWidget {
   RaisedButton({
     Key? key,
     required this.info,
   }) : super(key: key);
-  final info;
+  final String info;
 
   String? nick;
   String? name;
@@ -155,7 +156,7 @@ class RaisedButton extends StatelessWidget {
     final regExpName = RegExp(r'/?;([А-Яа-я]+)', unicode: true);
 
     final regExpStatus =
-        RegExp(r'(VIP)|(Гость Клуба)|(Друг Клуба)|(Новичок)', unicode: true);
+        RegExp(r'(VIP)|(Почетный гость)|(Новичок)', unicode: true);
 
     nick = regExpNick.stringMatch(info);
     name = regExpName.stringMatch(info);
@@ -171,9 +172,9 @@ class PopUpInformation extends StatelessWidget {
     required this.nick,
     required this.status,
   }) : super(key: key);
-  final name;
-  final nick;
-  final status;
+  final String? name;
+  final String? nick;
+  final String? status;
 
   @override
   Widget build(BuildContext context) {
@@ -184,9 +185,9 @@ class PopUpInformation extends StatelessWidget {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(name),
-              Text(nick),
-              Text(status),
+              Text(name!),
+              Text(nick!),
+              Text(status!),
             ],
           ),
           actions: <Widget>[
