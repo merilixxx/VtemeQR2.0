@@ -351,6 +351,7 @@ class _PopUpEditState extends State<PopUpEdit> {
                 widget.nick,
                 widget.status,
                 int.parse(payController.text),
+                data,
               );
             }
             widget.refresh;
