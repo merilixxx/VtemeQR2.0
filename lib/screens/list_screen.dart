@@ -96,12 +96,31 @@ class _ListScreenState extends State<ListScreen> {
                     motion: const ScrollMotion(),
                     children: [
                       SlidableAction(
-                        onPressed: (context) async {
-                          await addingBloc.deleteItem(
-                            data,
-                            user["Name"],
+                        onPressed: (context) {
+                          showDialog<Widget>(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Удалить посетителя?'),
+                              titleTextStyle: Font.cuprumStyle20,
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () async {
+                                    await addingBloc.deleteItem(
+                                      data,
+                                      user["Name"],
+                                    );
+                                    Navigator.of(context).pop();
+                                    refreshData(data);
+                                  },
+                                  child: const Text("Удалить"),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  child: const Text("Отмена"),
+                                ),
+                              ],
+                            ),
                           );
-                          refreshData(data);
                         },
                         backgroundColor: const Color.fromARGB(255, 190, 2, 2),
                         foregroundColor: Colors.white,
