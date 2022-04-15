@@ -3,6 +3,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get_it/get_it.dart';
 import 'package:vtemeqr/bloc/qr_screen_bloc.dart';
 import '../services/fonts.dart';
@@ -90,37 +91,59 @@ class _ListScreenState extends State<ListScreen> {
                 payment += int.parse(
                   user["Pay"],
                 );
-                final userTile = ListTile(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => PopUpEdit(
-                        name: user['Name'],
-                        nick: '${user["Nick"]}',
-                        status: user["Status"],
-                        pay: user["Pay"],
-                        refresh: () => refreshData(data),
+                final userTile = Slidable(
+                  endActionPane: ActionPane(
+                    motion: const ScrollMotion(),
+                    children: [
+                      SlidableAction(
+                        onPressed: (context) async {
+                          await addingBloc.deleteItem(
+                            data,
+                            user["Name"],
+                          );
+                          refreshData(data);
+                        },
+                        backgroundColor: const Color.fromARGB(255, 190, 2, 2),
+                        foregroundColor: Colors.white,
+                        icon: Icons.delete,
+                        label: 'Удалить',
                       ),
-                    );
-                  },
-                  title: Text(
-                    'г-н(жа) ${user["Nick"]}',
-                    style: Font.cuprumStyle20,
+                    ],
                   ),
-                  subtitle: Text(
-                    '${user['Name']}',
-                    style: Font.cuprumStyle16grey,
-                  ),
-                  trailing: Text(
-                    user["Status"],
-                    style: Font.cuprumStyle20,
+                  child: ListTile(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => PopUpEdit(
+                          name: user['Name'],
+                          nick: '${user["Nick"]}',
+                          status: user["Status"],
+                          pay: user["Pay"],
+                          refresh: () => refreshData(data),
+                        ),
+                      );
+                    },
+                    title: Text(
+                      'г-н(жа) ${user["Nick"]}',
+                      style: Font.cuprumStyle20,
+                    ),
+                    subtitle: Text(
+                      '${user['Name']}',
+                      style: Font.cuprumStyle16grey,
+                    ),
+                    trailing: Text(
+                      user["Status"],
+                      style: Font.cuprumStyle20,
+                    ),
                   ),
                 );
                 listOfUsers.add(userTile);
-                listOfUsers.add(const Divider(
-                  height: 5,
-                  color: Colors.grey,
-                ));
+                listOfUsers.add(
+                  const Divider(
+                    height: 5,
+                    color: Colors.grey,
+                  ),
+                );
               },
             );
             return Scaffold(

@@ -63,4 +63,14 @@ class QrScreenBloc extends Cubit<QrScreenBlocState> {
       },
     );
   }
+
+  Future deleteItem(DateTime date, key) async {
+    final firebase = FirebaseDatabase(
+            databaseURL:
+                "https://qrvteme-default-rtdb.europe-west1.firebasedatabase.app")
+        .reference();
+    await firebase
+        .child("Orders/${DateFormat('d_M_y').format(date).toString()}/$key")
+        .remove();
+  }
 }
