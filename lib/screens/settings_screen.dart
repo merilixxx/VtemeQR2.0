@@ -20,17 +20,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: <Widget>[
           ListTile(
             title: const Text(
-              'Настройка списка VIP',
-            ),
-            leading: Image.asset(
-              'assets/images/vip.png',
-              width: 32,
-              height: 32,
-            ),
-            onTap: () {},
-          ),
-          ListTile(
-            title: const Text(
               'Настройка оплаты',
             ),
             leading: Image.asset(
